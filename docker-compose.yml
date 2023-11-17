@@ -1,7 +1,7 @@
-version: '1'
+version: '3'
 services:
   api:
-    image: JnCM/icpedu-fabric-api
+    image: jncm/icpedu-fabric-api
     build: .
     networks:
       - backend
@@ -13,14 +13,14 @@ services:
   mongo:
     image: mongo
     volumes:
-      - ./data:/data/db
+      - icpedu-fabric-api-data:/data/db 
     networks:
       - backend
     ports:
       - "27017:27017"
 
   web-cli:
-    image: JnCM/icpedu-fabric-api
+    image: jncm/icpedu-fabric-api
     links:
       - mongo
     networks:
@@ -30,3 +30,6 @@ services:
 networks:
   backend:
     driver: bridge
+
+volumes: 
+  icpedu-fabric-api-data:
