@@ -28,7 +28,7 @@ O pacote do chaincode utilizado neste projeto pode ser consultado [aqui](https:/
 
 ## Execução
 
-Para testar a integração entre a API REST e a Blockchain Hyperledger Fabric, basta utilizar os seguintes comandos:
+Para testar a integração entre a API REST e a Blockchain Hyperledger Fabric, basta utilizar os seguintes comandos (Necessário docker instalado):
 
 ```bash
 docker-compose build
@@ -36,6 +36,12 @@ docker-compose build
 
 ```bash
 docker-compose up
+```
+
+Ou se preferir não utilizar docker (deve possuir as versões das tecnologias utilizadas instaladas), basta utilizar o seguinte comando:
+
+```bash
+npm start
 ```
 
 - O banco de dados MongoDB executará utilizando a porta `27017`;
