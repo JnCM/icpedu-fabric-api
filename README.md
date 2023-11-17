@@ -24,7 +24,7 @@ Este projeto é apenas para fins de comprovação e estudo das tecnologias. Em n
 
 Antes de executar o projeto, lembre-se de adaptar as variáveis de ambiente (arquivo localizado em `common/config/env.config.js`) de acordo com as suas configurações da rede. Lembre-se também de colocar na pasta `./fabric-credentials` as credenciais necessárias dos peers e usuários participantes da rede, seguindo a mesma estrutura do diretório, ou então adapte o arquivo `fabric.connect.js` de acordo com a sua necessidade.
 
-O pacote do chaincode utilizado neste projeto pode ser consultado [aqui]().
+O pacote do chaincode utilizado neste projeto pode ser consultado [aqui](https://github.com/JnCM/icpedu-chaincode).
 
 ## Execução
 
