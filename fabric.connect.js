@@ -1,17 +1,17 @@
+require('dotenv').config();
 const path = require('path');
 const fs = require('fs/promises');
 const grpc = require('@grpc/grpc-js');
 const crypto = require('crypto');
 const fabric = require('@hyperledger/fabric-gateway');
-const config = require('./common/config/env.config.js');
 
 class FabricConnect{
     constructor(){
-        this.channelName = config.channelName;
-        this.chaincodeName = config.chaincodeName;
-        this.mspId = config.mspId;
-        this.peerEndpoint = config.peerEndpoint;
-        this.peerHostAlias = config.peerHostAlias;
+        this.channelName = process.env.CHANNEL_NAME;
+        this.chaincodeName = process.env.CHAINCODE_NAME;
+        this.mspId = process.env.MSP_ID;
+        this.peerEndpoint = process.env.PEER_ENDPOINT;
+        this.peerHostAlias = process.env.PEER_HOST_ALIAS;
         this.cryptoPath = path.resolve(__dirname, 'fabric-credentials');
         this.keyDirectoryPath = path.resolve(this.cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'keystore');
         this.certPath = path.resolve(this.cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'signcerts', 'cert.pem');

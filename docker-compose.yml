@@ -1,35 +1,7 @@
-version: '3'
 services:
   api:
     image: jncm/icpedu-fabric-api
-    build: .
-    networks:
-      - backend
+    build:
+      context: .
     ports:
-      - "3000:3000"
-    depends_on:
-      - mongo
-
-  mongo:
-    image: mongo
-    volumes:
-      - icpedu-fabric-api-data:/data/db 
-    networks:
-      - backend
-    ports:
-      - "27017:27017"
-
-  web-cli:
-    image: jncm/icpedu-fabric-api
-    links:
-      - mongo
-    networks:
-      - backend
-    command: sh
-
-networks:
-  backend:
-    driver: bridge
-
-volumes: 
-  icpedu-fabric-api-data:
+      - 3000:3000

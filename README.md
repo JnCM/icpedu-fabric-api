@@ -12,7 +12,6 @@ Prova de conceito para o sistema ICPEdu, de criação de certificados digitais. 
 - Docker Desktop 24.0.5;
 - NodeJS 20.9.0;
 - Hyperledger Fabric 2.5.4;
-- MongoDB 7.0.3;
 
 ---
 
@@ -22,7 +21,7 @@ Este projeto não possui os passos de instalação e execução da rede de teste
 
 Este projeto é apenas para fins de comprovação e estudo das tecnologias. Em nenhum momento esta versão deve ser utilizada em produção, a menos que seja alterada de acordo com as devidas diretrizes de segurança.
 
-Antes de executar o projeto, lembre-se de adaptar as variáveis de ambiente (arquivo localizado em `common/config/env.config.js`) de acordo com as suas configurações da rede. Lembre-se também de colocar na pasta `./fabric-credentials` as credenciais necessárias dos peers e usuários participantes da rede, seguindo a mesma estrutura do diretório, ou então adapte o arquivo `fabric.connect.js` de acordo com a sua necessidade.
+Antes de executar o projeto, lembre-se de adaptar as variáveis de ambiente (arquivo `.env`) de acordo com as suas configurações da rede. Lembre-se também de colocar na pasta `./fabric-credentials` as credenciais necessárias dos peers e usuários participantes da rede, seguindo a mesma estrutura do diretório presente no repositório, ou então adapte o arquivo `fabric.connect.js` de acordo com a sua necessidade.
 
 O pacote do chaincode utilizado neste projeto pode ser consultado [aqui](https://github.com/JnCM/icpedu-chaincode).
 
@@ -31,11 +30,7 @@ O pacote do chaincode utilizado neste projeto pode ser consultado [aqui](https:/
 Para testar a integração entre a API REST e a Blockchain Hyperledger Fabric, basta utilizar os seguintes comandos (Necessário docker instalado):
 
 ```bash
-docker-compose build
-```
-
-```bash
-docker-compose up
+docker-compose up -d --build
 ```
 
 Ou se preferir não utilizar docker (deve possuir as versões das tecnologias utilizadas instaladas), basta utilizar o seguinte comando:
@@ -44,7 +39,6 @@ Ou se preferir não utilizar docker (deve possuir as versões das tecnologias ut
 npm start
 ```
 
-- O banco de dados MongoDB executará utilizando a porta `27017`;
 - A API REST executará utilizando a porta `3000`.
 
 ---

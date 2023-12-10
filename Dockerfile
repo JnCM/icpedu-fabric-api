@@ -6,8 +6,6 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN sed -i "s/mongodb:\/\/localhost/mongodb:\/\/mongo/g" common/services/mongoose.service.js
-
 RUN npm install
 
 EXPOSE 3000
