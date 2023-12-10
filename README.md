@@ -23,6 +23,18 @@ Este projeto é apenas para fins de comprovação e estudo das tecnologias. Em n
 
 Antes de executar o projeto, lembre-se de adaptar as variáveis de ambiente (arquivo `.env`) de acordo com as suas configurações da rede. Lembre-se também de colocar na pasta `./fabric-credentials` as credenciais necessárias dos peers e usuários participantes da rede, seguindo a mesma estrutura do diretório presente no repositório, ou então adapte o arquivo `fabric.connect.js` de acordo com a sua necessidade.
 
+Modelo do arquivo `.env` que deve estar contido na pasta raiz do repositório:
+
+```env
+PORT=3000 # Porta do endpoint da API REST
+SECRET_KEY=... # Chave secreta para validar o acesso às requisições
+CHANNEL_NAME=... # Nome do canal da Blockchain
+CHAINCODE_NAME=... # Nome do chaincode implantado na Blockchain
+MSP_ID=... # ID MSP da organização na Blockchain
+PEER_ENDPOINT=... # Endpoint do Peer da Blockchain
+PEER_HOST_ALIAS=... # Alias do Peer da Blockchain
+```
+
 O pacote do chaincode utilizado neste projeto pode ser consultado [aqui](https://github.com/JnCM/icpedu-chaincode).
 
 ## Execução
