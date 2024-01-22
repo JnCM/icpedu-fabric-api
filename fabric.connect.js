@@ -13,9 +13,9 @@ class FabricConnect{
         this.peerEndpoint = process.env.PEER_ENDPOINT;
         this.peerHostAlias = process.env.PEER_HOST_ALIAS;
         this.cryptoPath = path.resolve(__dirname, 'fabric-credentials');
-        this.keyDirectoryPath = path.resolve(this.cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'keystore');
-        this.certPath = path.resolve(this.cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'signcerts', 'cert.pem');
-        this.tlsCertPath = path.resolve(this.cryptoPath, 'peers', 'peer0.org1.example.com', 'tls', 'ca.crt');
+        this.keyDirectoryPath = path.resolve(this.cryptoPath, 'org-keystore');
+        this.certPath = path.resolve(this.cryptoPath, 'org-signcert', 'cert.pem');
+        this.tlsCertPath = path.resolve(this.cryptoPath, 'peer-tlscert', 'tlsca-signcert.pem');
         this.utf8Decoder = new TextDecoder();
     }
 
