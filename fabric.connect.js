@@ -35,7 +35,7 @@ class FabricConnect{
     
     async newSigner(){
         const files = await fs.readdir(this.keyDirectoryPath);
-        const keyPath = path.resolve(this.keyDirectoryPath, files[0]);
+        const keyPath = path.resolve(this.keyDirectoryPath, files[1]);
         const privateKeyPem = await fs.readFile(keyPath);
         const privateKey = crypto.createPrivateKey(privateKeyPem);
         return fabric.signers.newPrivateKeySigner(privateKey);
