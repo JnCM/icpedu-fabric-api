@@ -14,8 +14,4 @@ exports.routesConfig = function (app) {
         ValidationMiddleware.validSecretKey,
         CertificatesController.getById
     ]);
-    app.patch('/certificates/:certificateId', [
-        ValidationMiddleware.validSecretKey,
-        CertificatesController.patchById
-    ]);
 };

@@ -5,11 +5,12 @@ exports.insert = async (req, res) => {
     try{
         let today = new Date();
         req.body.createdAt = today.toISOString();
-        const blockchainId = crypto.createHash('md5').update(req.body.serialNumber).digest('hex');
+        // const blockchainId = crypto.createHash('md5').update(req.body.serialNumber).digest('hex');
+        const blockchainId = req.body.serialNumber;
 
         let network = new FabricConnect();
         await network.connectFabric();
-        await network.registerCertificate(blockchainId, req.body.serialNumber, req.body.createdAt, req.body.expiresAt);
+        await network.registerCertificate(req.body.serialNumber, req.body.createdAt, req.body.expiresAt);
         network.closeConnection();
 
         res.status(201).send({blockchainId: blockchainId});
@@ -40,30 +41,6 @@ exports.getById = async (req, res) => {
         const result = await network.getCertificate(req.params.certificateId);
         network.closeConnection();
         res.status(200).send(result);
-    }catch(err){
-        console.log(err);
-        res.status(400).send({msg: "Bad request!"});
-    }
-};
-
-exports.patchById = async (req, res) => {
-    try{
-        let today = new Date();
-        let certificate;
-        req.body.updatedAt = today.toISOString();
-        
-        let network = new FabricConnect();
-        await network.connectFabric();
-        certificate = await network.getCertificate(req.params.certificateId);
-        await network.renewCertificate(
-            req.params.certificateId,
-            certificate.SerialNumber,
-            certificate.CreatedAt,
-            req.body.expiresAt,
-            req.body.updatedAt
-        );
-        network.closeConnection();
-        res.status(204).send();
     }catch(err){
         console.log(err);
         res.status(400).send({msg: "Bad request!"});

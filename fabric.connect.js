@@ -62,24 +62,24 @@ class FabricConnect{
     }
 
     async getAllCertificates(){
-        const resultBytes = await this.contract.evaluateTransaction('getAllCertificates');
+        const resultBytes = await this.contract.evaluateTransaction('GetAllCertificates');
         const resultJson = this.utf8Decoder.decode(resultBytes);
         const result = JSON.parse(resultJson);
         return result;
     }
 
-    async getCertificate(id){
-        const resultBytes = await this.contract.evaluateTransaction('getCertificate', id);
+    async getCertificate(serialNumber){
+        const resultBytes = await this.contract.evaluateTransaction('ReadCertificate', serialNumber);
         const resultJson = this.utf8Decoder.decode(resultBytes);
         const result = JSON.parse(resultJson);
         return result;
     }
 
-    async registerCertificate(id, serialNumber, createdAt, expiresAt){
-        console.log('\n--> Async Submit Transaction: registerCertificate, creates a new certificate');
+    async registerCertificate(serialNumber, createdAt, expiresAt){
+        console.log('\n--> Async Submit Transaction: CreateCertificate, creates a new certificate');
 
-        const commit = await this.contract.submitAsync('registerCertificate', {
-            arguments: [id, serialNumber, createdAt, expiresAt],
+        const commit = await this.contract.submitAsync('CreateCertificate', {
+            arguments: [serialNumber, createdAt, expiresAt],
         });
         const newCertificate = this.utf8Decoder.decode(commit.getResult());
 
@@ -91,18 +91,7 @@ class FabricConnect{
             throw new Error(`Transaction ${status.transactionId} failed to commit with status code ${status.code}!`);
         }
 
-        console.log(`*** Transaction 'registerCertificate' committed successfully!`);
-    }
-
-    async renewCertificate(id, serialNumber, createdAt, expiresAt, updatedAt){
-        await this.contract.submitTransaction('renewCertificate',
-            id,
-            serialNumber,
-            createdAt,
-            expiresAt,
-            updatedAt
-        );
-        console.log(`*** Transaction 'renewCertificate' committed successfully!`);
+        console.log(`*** Transaction 'CreateCertificate' committed successfully!`);
     }
 }
 
