@@ -61,29 +61,29 @@ class FabricConnect{
         console.log(`*** Connection with Hyperledger Fabric closed successfully!`);
     }
 
-    async getAllCertificates(){
-        const resultBytes = await this.contract.evaluateTransaction('GetAllCertificates');
+    async getAllHashes(){
+        const resultBytes = await this.contract.evaluateTransaction('GetAllHashes');
         const resultJson = this.utf8Decoder.decode(resultBytes);
         const result = JSON.parse(resultJson);
         return result;
     }
 
-    async getCertificate(serialNumber){
-        const resultBytes = await this.contract.evaluateTransaction('ReadCertificate', serialNumber);
+    async getHash(hashString){
+        const resultBytes = await this.contract.evaluateTransaction('GetHash', hashString);
         const resultJson = this.utf8Decoder.decode(resultBytes);
         const result = JSON.parse(resultJson);
         return result;
     }
 
-    async registerCertificate(serialNumber, createdAt, expiresAt){
-        console.log('\n--> Async Submit Transaction: CreateCertificate, creates a new certificate');
+    async saveHash(hashString){
+        console.log('\n--> Async Submit Transaction: SaveHash, creates a new hash');
 
-        const commit = await this.contract.submitAsync('CreateCertificate', {
-            arguments: [serialNumber, createdAt, expiresAt],
+        const commit = await this.contract.submitAsync('SaveHash', {
+            arguments: [hashString],
         });
-        const newCertificate = this.utf8Decoder.decode(commit.getResult());
+        const newHash = this.utf8Decoder.decode(commit.getResult());
 
-        console.log(`*** Successfully created a new certificate: ${newCertificate}`);
+        console.log(`*** Successfully created a new hash: ${newHash}`);
         console.log('*** Waiting for transaction commit');
 
         const status = await commit.getStatus();
@@ -91,7 +91,7 @@ class FabricConnect{
             throw new Error(`Transaction ${status.transactionId} failed to commit with status code ${status.code}!`);
         }
 
-        console.log(`*** Transaction 'CreateCertificate' committed successfully!`);
+        console.log(`*** Transaction 'SaveHash' committed successfully!`);
     }
 }
 

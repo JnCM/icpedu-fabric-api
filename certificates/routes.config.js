@@ -10,7 +10,7 @@ exports.routesConfig = function (app) {
         ValidationMiddleware.validSecretKey,
         CertificatesController.list
     ]);
-    app.get('/certificates/:certificateId', [
+    app.get('/certificates/:hashString', [
         ValidationMiddleware.validSecretKey,
         CertificatesController.getById
     ]);
