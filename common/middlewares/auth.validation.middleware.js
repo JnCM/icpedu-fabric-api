@@ -10,7 +10,6 @@ exports.validSecretKey = (req, res, next) => {
                 return next();
             }
         } catch (err) {
-            console.log(err);
             return res.status(403).send({error: 'Invalid authorization!'});
         }
     } else {

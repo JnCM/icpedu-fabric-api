@@ -1,9 +1,9 @@
 require('dotenv').config();
-const path = require('path');
 const fs = require('fs/promises');
 const grpc = require('@grpc/grpc-js');
 const crypto = require('crypto');
 const fabric = require('@hyperledger/fabric-gateway');
+const logger = require('./logger');
 
 class FabricConnect{
     constructor(){
@@ -12,10 +12,9 @@ class FabricConnect{
         this.mspId = process.env.MSP_ID;
         this.peerEndpoint = process.env.PEER_ENDPOINT;
         this.peerHostAlias = process.env.PEER_HOST_ALIAS;
-        this.cryptoPath = path.resolve(__dirname, 'fabric-credentials');
-        this.keyDirectoryPath = path.resolve(this.cryptoPath, 'org-keystore');
-        this.certPath = path.resolve(this.cryptoPath, 'org-signcert', 'cert.pem');
-        this.tlsCertPath = path.resolve(this.cryptoPath, 'peer-tlscert', 'tlsca-signcert.pem');
+        this.keyDirectoryPath = process.env.KEYSTORE_PATH;
+        this.certPath = process.env.SIGNCERT_PATH;
+        this.tlsCertPath = process.env.PEERTLSCERT_PATH;
         this.utf8Decoder = new TextDecoder();
     }
 
@@ -34,9 +33,7 @@ class FabricConnect{
     }
     
     async newSigner(){
-        const files = await fs.readdir(this.keyDirectoryPath);
-        const keyPath = path.resolve(this.keyDirectoryPath, files[1]);
-        const privateKeyPem = await fs.readFile(keyPath);
+        const privateKeyPem = await fs.readFile(this.keyDirectoryPath);
         const privateKey = crypto.createPrivateKey(privateKeyPem);
         return fabric.signers.newPrivateKeySigner(privateKey);
     }
@@ -48,23 +45,39 @@ class FabricConnect{
             client,
             identity: await this.newIdentity(),
             signer: await this.newSigner(),
+            evaluateOptions: () => {
+                return { deadline: Date.now() + 60000 }; // 1 minute
+            },
+            endorseOptions: () => {
+                return { deadline: Date.now() + 60000 }; // 1 minute
+            },
+            submitOptions: () => {
+                return { deadline: Date.now() + 60000 }; // 1 minute
+            },
+            commitStatusOptions: () => {
+                return { deadline: Date.now() + 60000 }; // 1 minute
+            },
         });
         
         this.network = this.gateway.getNetwork(this.channelName);
         this.contract = this.network.getContract(this.chaincodeName);
-        console.log(`*** Hyperledger Fabric connected successfully!`);
+        logger.info(`Hyperledger Fabric connected successfully!`);
     }
 
     closeConnection(){
         this.gateway.close();
         this.client.close();
-        console.log(`*** Connection with Hyperledger Fabric closed successfully!`);
+        logger.info(`Connection with Hyperledger Fabric closed successfully!`);
     }
 
     async getAllHashes(){
         const resultBytes = await this.contract.evaluateTransaction('GetAllHashes');
         const resultJson = this.utf8Decoder.decode(resultBytes);
-        const result = JSON.parse(resultJson);
+        let result = JSON.parse(resultJson);
+        for (let i = 0; i < result.length; i++) {
+            result[i].TxTimestamp = this.toDate(result[i].TxTimestamp);
+        }
+        logger.info(`Transaction 'GetAllHashes' executed successfully!`);
         return result;
     }
 
@@ -72,26 +85,47 @@ class FabricConnect{
         const resultBytes = await this.contract.evaluateTransaction('GetHash', hashString);
         const resultJson = this.utf8Decoder.decode(resultBytes);
         const result = JSON.parse(resultJson);
+        result.TxTimestamp = this.toDate(result.TxTimestamp);
+        logger.info(`Transaction 'GetHash' executed successfully!`);
         return result;
     }
 
     async saveHash(hashString){
-        console.log('\n--> Async Submit Transaction: SaveHash, creates a new hash');
+        logger.info('--> Async Submit Transaction: SaveHash, creates a new hash...');
 
         const commit = await this.contract.submitAsync('SaveHash', {
             arguments: [hashString],
         });
-        const newHash = this.utf8Decoder.decode(commit.getResult());
 
-        console.log(`*** Successfully created a new hash: ${newHash}`);
-        console.log('*** Waiting for transaction commit');
-
+        logger.info('Waiting for transaction commit');
         const status = await commit.getStatus();
         if (!status.successful) {
             throw new Error(`Transaction ${status.transactionId} failed to commit with status code ${status.code}!`);
         }
+        logger.info(`Transaction 'SaveHash' committed successfully!`);
+        
+        const startBlock = status.blockNumber;
+        const events = await this.network.getChaincodeEvents(this.chaincodeName, {startBlock});
+        let payloadEvent;
+        for await (const event of events) {
+            const payload = this.parseJson(event.payload);
+            payloadEvent = payload;
+            break;
+        }
+        payloadEvent.TxTimestamp = this.toDate(payloadEvent.TxTimestamp);
 
-        console.log(`*** Transaction 'SaveHash' committed successfully!`);
+        return payloadEvent;
+    }
+
+    parseJson(jsonBytes){
+        const json = this.utf8Decoder.decode(jsonBytes);
+        return JSON.parse(json);
+    }
+
+    toDate(timestamp) {
+        const milliseconds = (timestamp.seconds.low + ((timestamp.nanos / 1000000) / 1000)) * 1000;
+        let dateConverted = new Date(milliseconds);
+        return dateConverted;
     }
 }
 

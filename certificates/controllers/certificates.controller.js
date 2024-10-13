@@ -1,5 +1,5 @@
-const crypto = require('crypto');
 const FabricConnect = require('../../fabric.connect');
+const logger = require('../../logger');
 
 exports.insert = async (req, res) => {
     try{
@@ -7,13 +7,24 @@ exports.insert = async (req, res) => {
 
         let network = new FabricConnect();
         await network.connectFabric();
-        await network.saveHash(hashString);
+        result = await network.saveHash(hashString);
         network.closeConnection();
 
-        res.status(201).send({status: "success", hashSaved: hashString});
+        res.status(201).send(result);
     }catch(err){
-        console.log(err);
-        res.status(400).send({msg: "Bad request!"});
+        if (Object.hasOwn(err, 'details')) {
+            logger.error(`Error: ${err.details[0].message}`);
+            res.status(400).send({
+                msg: "Bad request!",
+                description: err.details[0].message
+            });
+        }else{
+            logger.error(`Error: ${err.message}`);
+            res.status(400).send({
+                msg: "Bad request!",
+                description: err.message
+            });
+        }
     }
     
 };
@@ -26,8 +37,11 @@ exports.list = async (req, res) => {
         network.closeConnection();
         res.status(200).send(result);
     }catch(err){
-        console.log(err);
-        res.status(400).send({msg: "Bad request!"});
+        logger.error(`Error: ${err.message}`);
+        res.status(400).send({
+            msg: "Bad request!",
+            description: err.message
+        });
     }
 };
 
@@ -39,7 +53,10 @@ exports.getById = async (req, res) => {
         network.closeConnection();
         res.status(200).send(result);
     }catch(err){
-        console.log(err);
-        res.status(400).send({msg: "Bad request!"});
+        logger.error(`Error: ${err.message}`);
+        res.status(400).send({
+            msg: "Bad request!",
+            description: err.message
+        });
     }
 };

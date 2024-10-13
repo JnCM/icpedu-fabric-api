@@ -33,9 +33,12 @@ CHAINCODE_NAME=... # Nome do chaincode implantado na Blockchain
 MSP_ID=... # ID MSP da organização na Blockchain
 PEER_ENDPOINT=... # Endpoint do Peer da Blockchain
 PEER_HOST_ALIAS=... # Alias do Peer da Blockchain
+KEYSTORE_PATH=... # Path para o arquivo .pem da keystore da organização
+SIGNCERT_PATH=... # Path para o arquivo .pem do signcert da organização
+PEERTLSCERT_PATH=... # Path para o arquivo .pem do tls-cert do peer da rede
 ```
 
-O pacote do chaincode utilizado neste projeto pode ser consultado [aqui](https://github.com/JnCM/icpedu-chaincode).
+O pacote do chaincode utilizado neste projeto pode ser consultado [aqui](https://github.com/JnCM/icpedu).
 
 ## Execução
 
