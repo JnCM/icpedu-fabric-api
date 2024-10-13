@@ -7,7 +7,7 @@ exports.insert = async (req, res) => {
 
         let network = new FabricConnect();
         await network.connectFabric();
-        result = await network.saveHash(hashString);
+        const result = await network.saveHash(hashString);
         network.closeConnection();
 
         res.status(201).send(result);
@@ -31,15 +31,10 @@ exports.insert = async (req, res) => {
 
 exports.list = async (req, res) => {
     try{
-        let result;
-        if(process.env.ENVIRONMENT === "PRODUCTION"){
-            let network = new FabricConnect();
-            await network.connectFabric();
-            result = await network.getAllHashes();
-            network.closeConnection();
-        }else{
-            result = [{hashString: "OSPiKPamEvO3ekkf2oSjUtOPKOgd2Wh5"}];
-        }
+        let network = new FabricConnect();
+        await network.connectFabric();
+        const result = await network.getAllHashes();
+        network.closeConnection();
 
         res.status(200).send(result);
     }catch(err){
@@ -53,15 +48,10 @@ exports.list = async (req, res) => {
 
 exports.getById = async (req, res) => {
     try{
-        let result;
-        if(process.env.ENVIRONMENT === "PRODUCTION"){
-            let network = new FabricConnect();
-            await network.connectFabric();
-            result = await network.getHash(req.params.hashString);
-            network.closeConnection();
-        }else{
-            result = {hashString: req.params.hashString};
-        }
+        let network = new FabricConnect();
+        await network.connectFabric();
+        const result = await network.getHash(req.params.hashString);
+        network.closeConnection();
         res.status(200).send(result);
     }catch(err){
         logger.error(`Error: ${err.message}`);
