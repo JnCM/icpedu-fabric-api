@@ -31,10 +31,16 @@ exports.insert = async (req, res) => {
 
 exports.list = async (req, res) => {
     try{
-        let network = new FabricConnect();
-        await network.connectFabric();
-        const result = await network.getAllHashes();
-        network.closeConnection();
+        let result;
+        if(process.env.ENVIRONMENT === "PRODUCTION"){
+            let network = new FabricConnect();
+            await network.connectFabric();
+            result = await network.getAllHashes();
+            network.closeConnection();
+        }else{
+            result = [{hashString: "OSPiKPamEvO3ekkf2oSjUtOPKOgd2Wh5"}];
+        }
+
         res.status(200).send(result);
     }catch(err){
         logger.error(`Error: ${err.message}`);
@@ -47,10 +53,15 @@ exports.list = async (req, res) => {
 
 exports.getById = async (req, res) => {
     try{
-        let network = new FabricConnect();
-        await network.connectFabric();
-        const result = await network.getHash(req.params.hashString);
-        network.closeConnection();
+        let result;
+        if(process.env.ENVIRONMENT === "PRODUCTION"){
+            let network = new FabricConnect();
+            await network.connectFabric();
+            result = await network.getHash(req.params.hashString);
+            network.closeConnection();
+        }else{
+            result = {hashString: req.params.hashString};
+        }
         res.status(200).send(result);
     }catch(err){
         logger.error(`Error: ${err.message}`);
