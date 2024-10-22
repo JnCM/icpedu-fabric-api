@@ -75,7 +75,9 @@ class FabricConnect{
         const resultJson = this.utf8Decoder.decode(resultBytes);
         let result = JSON.parse(resultJson);
         for (let i = 0; i < result.length; i++) {
-            result[i].TxTimestamp = this.toDate(result[i].TxTimestamp);
+            if(result[i].TxTimestamp !== undefined){
+                result[i].TxTimestamp = this.toDate(result[i].TxTimestamp);
+            }
         }
         logger.info(`Transaction 'GetAllHashes' executed successfully!`);
         return result;

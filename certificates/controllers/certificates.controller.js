@@ -13,11 +13,19 @@ exports.insert = async (req, res) => {
         res.status(201).send(result);
     }catch(err){
         if (Object.hasOwn(err, 'details')) {
-            logger.error(`Error: ${err.details[0].message}`);
-            res.status(400).send({
-                msg: "Bad request!",
-                description: err.details[0].message
-            });
+            if(err.details.length > 0){
+                logger.error(`Error: ${err.details[0].message}`);
+                res.status(400).send({
+                    msg: "Bad request!",
+                    description: err.details[0].message
+                });
+            }else{
+                logger.error(`Error: ${err.message}`);
+                res.status(400).send({
+                    msg: "Bad request!",
+                    description: err.message
+                });
+            }
         }else{
             logger.error(`Error: ${err.message}`);
             res.status(400).send({
